@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	flag.String("config", "", "config file (json)")
+	configFilename := flag.String("config", "", "config file (json)")
+	// TODO: skip non-cleared items
 	var firstDay time.Time
 	flag.Func("firstDay", "The first day to include", func(s string) error {
 		var err error
@@ -24,4 +25,5 @@ func main() {
 	filename := flag.Arg(0)
 	fmt.Printf("first: %s\nlast: %s\nfile: %s\n", firstDay, lastDay, filename)
 	ReadCopilot(filename)
+	ReadConfig(*configFilename)
 }

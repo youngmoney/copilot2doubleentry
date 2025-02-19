@@ -8,27 +8,6 @@ import (
 	"time"
 )
 
-const (
-	TRANSACTION_DATE_FORMAT = "2006-01-02"
-)
-
-type TransactionDate struct {
-	time.Time
-}
-
-func (date TransactionDate) String() string {
-	return date.Time.Format(TRANSACTION_DATE_FORMAT)
-}
-
-func (date *TransactionDate) MarshalCSV() (string, error) {
-	return date.Time.Format(TRANSACTION_DATE_FORMAT), nil
-}
-
-func (date *TransactionDate) UnmarshalCSV(csv string) (err error) {
-	date.Time, err = time.Parse(TRANSACTION_DATE_FORMAT, csv)
-	return err
-}
-
 type CopilotTransactionStatus int64
 
 const (
@@ -141,7 +120,7 @@ func ParseDateFlag(s string) (time.Time, error) {
 	return time.Parse("2006-01-02", s)
 }
 
-func ReadCopilot(filename string) {
+func ReadCopilot(filename string) []*CopilotTransaction {
 	file, err := os.OpenFile(filename, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		panic(err)
@@ -156,4 +135,6 @@ func ReadCopilot(filename string) {
 	for _, t := range transactions {
 		fmt.Println(t)
 	}
+
+	return transactions
 }
