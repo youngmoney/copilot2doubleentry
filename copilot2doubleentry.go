@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gocarina/gocsv"
 	"time"
 )
 
 func main() {
 	configFilename := flag.String("config", "", "config file (json)")
-	// TODO: skip non-cleared items
 	var firstDay time.Time
 	flag.Func("firstDay", "The first day to include", func(s string) error {
 		var err error
@@ -23,12 +23,12 @@ func main() {
 	})
 	flag.Parse()
 	filename := flag.Arg(0)
-	fmt.Printf("first: %s\nlast: %s\nfile: %s\n", firstDay, lastDay, filename)
 	transactions := ReadCopilot(filename)
 	config := ReadConfig(*configFilename)
-	fmt.Println(config)
-	converted := Convert(transactions, config)
-	for _, c := range converted {
-		fmt.Println(c)
+	converted := Convert(transactions, config, firstDay, lastDay)
+	csvContent, err := gocsv.MarshalString(&converted)
+	if err != nil {
+		panic(err)
 	}
+	fmt.Println(csvContent)
 }

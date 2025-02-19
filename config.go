@@ -3,21 +3,21 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"regexp"
 )
 
 type TransactionMatch struct {
-	// TODO: add regex to the json names
-	DescriptionRegex string `json:"description"`
-	AccountRgex      string `json:"account"`
+	DescriptionRegex *regexp.Regexp `json:"description"`
+	AccountRegex     *regexp.Regexp `json:"account"`
 	// if positive in copilot
-	Outgoing bool `json:"outgoing"`
+	Outgoing *bool `json:"outgoing"`
 }
 
 type Override struct {
 	Match        TransactionMatch `json:"match"`
-	Account      string           `json:"account"`
-	SplitAccount string           `json:"split_account"`
-	AlwaysPair   bool             `json:"always_pair"`
+	Account      *string          `json:"account"`
+	SplitAccount *string          `json:"split_account"`
+	AlwaysPair   *bool            `json:"always_pair"`
 }
 
 type Overrides struct {
