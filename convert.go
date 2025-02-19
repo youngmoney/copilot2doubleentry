@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"math"
+	"slices"
+	"sort"
 	"strings"
 	"time"
 )
@@ -61,7 +65,7 @@ func FindOverride(t *CopilotTransaction, overrides []Override) *Override {
 	return nil
 }
 
-func ConvertRegular(t *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
+func ConvertExpense(t *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
 	override := FindOverride(t, config.Overrides.Expense)
 	var expense DoubleEntryTransaction
 	var liability DoubleEntryTransaction
@@ -117,9 +121,144 @@ func ConvertIncome(t *CopilotTransaction, config Config) (DoubleEntryTransaction
 	return expense, liability
 }
 
+func ConvertInternalTransferExpense(t *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
+	override := FindOverride(t, config.Overrides.Transfer)
+	if override != nil && override.AlwaysPair != nil && *override.AlwaysPair == true {
+		log.Fatal("No pair for %s", t)
+	}
+	var expense DoubleEntryTransaction
+	var liability DoubleEntryTransaction
+
+	expense.Date = t.Date
+	liability.Date = t.Date
+
+	expense.Description = t.CreateDescription()
+	liability.Description = t.CreateDescription()
+	expense.Notes = t.CreateNote()
+	liability.Notes = t.CreateNote()
+
+	expense.AmountNum = t.Amount
+	liability.AmountNum = -t.Amount
+
+	expense.AccountName = "TRANSFER OUT"
+	if override != nil && override.SplitAccount != nil {
+		expense.AccountName = *override.SplitAccount
+	}
+	liability.AccountName = t.Account
+	if override != nil && override.Account != nil {
+		liability.AccountName = *override.Account
+	}
+
+	return expense, liability
+}
+
+func ConvertInternalTransferIncome(t *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
+	override := FindOverride(t, config.Overrides.Transfer)
+	if override != nil && override.AlwaysPair != nil && *override.AlwaysPair == true {
+		log.Fatal("No pair for %s", t)
+	}
+	var expense DoubleEntryTransaction
+	var liability DoubleEntryTransaction
+
+	expense.Date = t.Date
+	liability.Date = t.Date
+
+	expense.Description = t.CreateDescription()
+	liability.Description = t.CreateDescription()
+	expense.Notes = t.CreateNote()
+	liability.Notes = t.CreateNote()
+
+	expense.AmountNum = -t.Amount
+	liability.AmountNum = t.Amount
+
+	expense.AccountName = t.Account
+	if override != nil && override.Account != nil {
+		expense.AccountName = *override.Account
+	}
+	liability.AccountName = "TRANSFER INCOME"
+	if override != nil && override.SplitAccount != nil {
+		liability.AccountName = *override.SplitAccount
+	}
+
+	return expense, liability
+}
+
+func ConvertInternalTransferPair(p *CopilotTransaction, n *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
+	// override_p := FindOverride(p, config.Overrides.Transfer)
+	// override_n := FindOverride(n, config.Overrides.Transfer)
+
+	name := p.Name + "/" + n.Name
+
+	var expense DoubleEntryTransaction
+	var liability DoubleEntryTransaction
+
+	expense.Date = p.Date
+	liability.Date = p.Date
+
+	expense.Description = name
+	liability.Description = name
+	expense.Notes = p.CreateNote()
+	liability.Notes = p.CreateNote()
+
+	expense.AmountNum = p.Amount
+	liability.AmountNum = -p.Amount
+
+	expense.AccountName = n.Account
+	liability.AccountName = p.Account
+
+	return expense, liability
+}
+
+func ProcessTransfers(transfers []*CopilotTransaction, config Config) []DoubleEntryTransaction {
+	var negatives, positives []*CopilotTransaction
+
+	for _, t := range transfers {
+		if t.Amount < 0 {
+			negatives = append(negatives, t)
+		} else {
+			positives = append(positives, t)
+		}
+	}
+
+	var used_negatives []*CopilotTransaction
+
+	var converted []DoubleEntryTransaction
+
+	for _, p := range positives {
+		var paired bool
+
+		for _, n := range negatives {
+			if p.Amount == -n.Amount {
+				if math.Abs(p.Date.Time.Sub(n.Date.Time).Hours()) < 5*24 {
+					used_negatives = append(used_negatives, n)
+					paired = true
+					one, two := ConvertInternalTransferPair(p, n, config)
+					converted = append(converted, one, two)
+				}
+			}
+		}
+
+		if !paired {
+			one, two := ConvertInternalTransferExpense(p, config)
+			converted = append(converted, one, two)
+
+		}
+	}
+
+	for _, n := range negatives {
+		if slices.Contains(used_negatives, n) {
+			continue
+		}
+		one, two := ConvertInternalTransferIncome(n, config)
+		converted = append(converted, one, two)
+	}
+	return converted
+}
+
 func Convert(transactions []*CopilotTransaction, config Config, firstDay time.Time, lastDay time.Time) []DoubleEntryTransaction {
 	var converted []DoubleEntryTransaction
 
+	var transfers []*CopilotTransaction
 	for _, t := range transactions {
 		if t.Status == PENDING {
 			continue
@@ -134,14 +273,21 @@ func Convert(transactions []*CopilotTransaction, config Config, firstDay time.Ti
 
 		switch t.Type {
 		case REGULAR:
-			one, two := ConvertRegular(t, config)
+			one, two := ConvertExpense(t, config)
 			converted = append(converted, one, two)
 		case INCOME:
 			one, two := ConvertIncome(t, config)
 			converted = append(converted, one, two)
+		case INTERNAL_TRANSFER:
+			transfers = append(transfers, t)
 
 		}
 	}
 
+	converted = append(converted, ProcessTransfers(transfers, config)...)
+
+	sort.Slice(converted, func(i, j int) bool {
+		return converted[i].Date.Time.After(converted[j].Date.Time)
+	})
 	return converted
 }

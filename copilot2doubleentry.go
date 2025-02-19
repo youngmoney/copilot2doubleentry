@@ -30,5 +30,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(csvContent)
+	fmt.Print(csvContent)
 }
