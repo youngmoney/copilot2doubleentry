@@ -24,6 +24,11 @@ func main() {
 	flag.Parse()
 	filename := flag.Arg(0)
 	fmt.Printf("first: %s\nlast: %s\nfile: %s\n", firstDay, lastDay, filename)
-	ReadCopilot(filename)
-	ReadConfig(*configFilename)
+	transactions := ReadCopilot(filename)
+	config := ReadConfig(*configFilename)
+	fmt.Println(config)
+	converted := Convert(transactions, config)
+	for _, c := range converted {
+		fmt.Println(c)
+	}
 }

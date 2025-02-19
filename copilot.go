@@ -132,9 +132,6 @@ func ReadCopilot(filename string) []*CopilotTransaction {
 	if err := gocsv.UnmarshalFile(file, &transactions); err != nil { // Load clients from file
 		panic(err)
 	}
-	for _, t := range transactions {
-		fmt.Println(t)
-	}
 
 	return transactions
 }

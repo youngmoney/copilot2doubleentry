@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -41,8 +40,6 @@ func ReadConfig(filename string) Config {
 	if err := json.Unmarshal(raw, &config); err != nil {
 		panic(err)
 	}
-
-	fmt.Println(config)
 
 	return config
 }
