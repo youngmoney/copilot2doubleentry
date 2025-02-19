@@ -1,4 +1,4 @@
-module github.com/youngmoney/copilot2gnucash
+module github.com/youngmoney/copilot2doubleentry
 
 go 1.23.4
 
