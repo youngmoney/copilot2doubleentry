@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gocarina/gocsv"
+	"os"
 	"time"
 )
 
@@ -23,6 +24,10 @@ func main() {
 	})
 	flag.Parse()
 	filename := flag.Arg(0)
+	if len(filename) == 0 {
+		fmt.Println("provide a csv file to convert")
+		os.Exit(1)
+	}
 	transactions := ReadCopilot(filename)
 	config := ReadConfig(*configFilename)
 	converted := Convert(transactions, config, firstDay, lastDay)
