@@ -50,7 +50,7 @@ func (t *CopilotTransaction) CreateNote() string {
 func FindOverride(t *CopilotTransaction, overrides []Override) *Override {
 	for _, o := range overrides {
 		m := o.Match
-		if m.Outgoing != nil && t.Amount < 0 == *m.Outgoing {
+		if m.Outgoing != nil && t.Amount.IsNegative() == *m.Outgoing {
 			continue
 		}
 		if m.DescriptionRegex != nil && !m.DescriptionRegex.MatchString(t.Name) {
@@ -79,7 +79,7 @@ func ConvertExpense(t *CopilotTransaction, config Config) (DoubleEntryTransactio
 	liability.Notes = t.CreateNote()
 
 	expense.AmountNum = t.Amount
-	liability.AmountNum = -t.Amount
+	liability.AmountNum = Amount{t.Amount.Neg()}
 
 	expense.AccountName = t.Category
 	if override != nil && override.Account != nil {
@@ -106,7 +106,7 @@ func ConvertIncome(t *CopilotTransaction, config Config) (DoubleEntryTransaction
 	expense.Notes = t.CreateNote()
 	liability.Notes = t.CreateNote()
 
-	expense.AmountNum = -t.Amount
+	expense.AmountNum = Amount{t.Amount.Neg()}
 	liability.AmountNum = t.Amount
 
 	expense.AccountName = t.Account
@@ -138,7 +138,7 @@ func ConvertInternalTransferExpense(t *CopilotTransaction, config Config) (Doubl
 	liability.Notes = t.CreateNote()
 
 	expense.AmountNum = t.Amount
-	liability.AmountNum = -t.Amount
+	liability.AmountNum = Amount{t.Amount.Neg()}
 
 	expense.AccountName = "TRANSFER OUT"
 	if override != nil && override.SplitAccount != nil {
@@ -168,7 +168,7 @@ func ConvertInternalTransferIncome(t *CopilotTransaction, config Config) (Double
 	expense.Notes = t.CreateNote()
 	liability.Notes = t.CreateNote()
 
-	expense.AmountNum = -t.Amount
+	expense.AmountNum = Amount{t.Amount.Neg()}
 	liability.AmountNum = t.Amount
 
 	expense.AccountName = t.Account
@@ -201,7 +201,7 @@ func ConvertInternalTransferPair(p *CopilotTransaction, n *CopilotTransaction, c
 	liability.Notes = p.CreateNote()
 
 	expense.AmountNum = p.Amount
-	liability.AmountNum = -p.Amount
+	liability.AmountNum = Amount{p.Amount.Neg()}
 
 	expense.AccountName = n.Account
 	liability.AccountName = p.Account
@@ -213,7 +213,7 @@ func ProcessTransfers(transfers []*CopilotTransaction, config Config) []DoubleEn
 	var negatives, positives []*CopilotTransaction
 
 	for _, t := range transfers {
-		if t.Amount < 0 {
+		if t.Amount.Sign() < 0 {
 			negatives = append(negatives, t)
 		} else {
 			positives = append(positives, t)
@@ -228,7 +228,7 @@ func ProcessTransfers(transfers []*CopilotTransaction, config Config) []DoubleEn
 		var paired bool
 
 		for _, n := range negatives {
-			if p.Amount == -n.Amount {
+			if p.Amount.Add(n.Amount.Decimal).IsZero() {
 				if math.Abs(p.Date.Time.Sub(n.Date.Time).Hours()) < 5*24 {
 					used_negatives = append(used_negatives, n)
 					paired = true
@@ -286,7 +286,7 @@ func Convert(transactions []*CopilotTransaction, config Config, firstDay time.Ti
 
 	converted = append(converted, ProcessTransfers(transfers, config)...)
 
-	sort.Slice(converted, func(i, j int) bool {
+	sort.SliceStable(converted, func(i, j int) bool {
 		return converted[i].Date.Time.After(converted[j].Date.Time)
 	})
 	return converted

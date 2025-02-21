@@ -6,6 +6,5 @@ type DoubleEntryTransaction struct {
 	Notes       string          `csv:"Notes"`
 	Memo        string          `csv:"Memo"`
 	AccountName string          `csv:"Account Name"`
-	// TODO: Make this fixed precision
-	AmountNum float64 `csv:"Amount Num."`
+	AmountNum   Amount          `csv:"Amount Num."`
 }

@@ -100,10 +100,9 @@ func (t *CopilotTransactionType) UnmarshalCSV(csv string) (err error) {
 }
 
 type CopilotTransaction struct {
-	Date TransactionDate `csv:"date"`
-	Name string          `csv:"name"`
-	// TODO: Make this fixed precision
-	Amount         float64                  `csv:"amount"`
+	Date           TransactionDate          `csv:"date"`
+	Name           string                   `csv:"name"`
+	Amount         Amount                   `csv:"amount"`
 	Status         CopilotTransactionStatus `csv:"status"`
 	Category       string                   `csv:"category"`
 	ParentCategory string                   `csv:"parent category"`
