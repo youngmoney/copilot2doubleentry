@@ -24,7 +24,7 @@ useful for excluded categories.
             "match": {
                 "description": "re2 matching the name/description",
                 "account": "re2 matching the account"
-                "outgoing": // bool if true then the transaction is leaving the account
+                "outgoing": true
             }
             "account": "optional, category or original account override"
             "split_account": "optional, account or source/destination"
@@ -41,6 +41,7 @@ First match wins.
 When matching:
 
 -   the `account` is never the category, always the account field.
+-   `outgoing` is true when the money is leaving the account
 
 When overriding Expenses:
 
