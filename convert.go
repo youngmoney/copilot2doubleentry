@@ -175,7 +175,7 @@ func ConvertInternalTransferIncome(t *CopilotTransaction, config Config) (Double
 	if override != nil && override.Account != nil {
 		expense.AccountName = *override.Account
 	}
-	liability.AccountName = "TRANSFER INCOME"
+	liability.AccountName = "TRANSFER IN"
 	if override != nil && override.SplitAccount != nil {
 		liability.AccountName = *override.SplitAccount
 	}
