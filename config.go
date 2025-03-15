@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"regexp"
 )
 
@@ -33,12 +35,14 @@ type Config struct {
 func ReadConfig(filename string) Config {
 	raw, err := ioutil.ReadFile(filename)
 	if err != nil {
-		panic(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	config := Config{}
 	if err := json.Unmarshal(raw, &config); err != nil {
-		panic(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	return config

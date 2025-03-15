@@ -1,0 +1,41 @@
+{
+  "overrides": {
+    "income": [
+      {
+        "match": {
+          "description": "Payroll Company",
+          "account": "My Checkings",
+          "outgoing":  false
+        },
+        "split_account": "Income"
+      }
+    ],
+    "transfer": [
+      {
+        "match": {
+          "description": "Venmo",
+          "account": "My Checkings",
+          "outgoing":  true
+        },
+        "split_account": "Venmo"
+      },
+      {
+        "match": {
+          "description": "Transfer to Checkings",
+          "account": "My Checkings",
+          "outgoing":  false
+        },
+        "split_account": "Dividends Income"
+      }
+    ],
+    "expense": [
+      {
+        "match": {
+            "description": ".*tax.*",
+            "account": ".*"
+        },
+        "split_account": "Income Losses"
+      }
+    ]
+  }
+}

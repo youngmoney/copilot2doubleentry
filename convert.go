@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"os"
 	"slices"
 	"sort"
 	"strings"
@@ -113,9 +114,10 @@ func ConvertIncome(t *CopilotTransaction, config Config) (DoubleEntryTransaction
 	if override != nil && override.Account != nil {
 		expense.AccountName = *override.Account
 	}
-	liability.AccountName = "INCOME INCOME"
 	if override != nil && override.SplitAccount != nil {
 		liability.AccountName = *override.SplitAccount
+	} else {
+		ErrorWithConfigTemplate(kIncomeOverrideTemplate, t)
 	}
 
 	return expense, liability
@@ -140,9 +142,10 @@ func ConvertInternalTransferExpense(t *CopilotTransaction, config Config) (Doubl
 	expense.AmountNum = t.Amount
 	liability.AmountNum = Amount{t.Amount.Neg()}
 
-	expense.AccountName = "TRANSFER OUT"
 	if override != nil && override.SplitAccount != nil {
 		expense.AccountName = *override.SplitAccount
+	} else {
+		ErrorWithConfigTemplate(kTransferOutOverrideTemplate, t)
 	}
 	liability.AccountName = t.Account
 	if override != nil && override.Account != nil {
@@ -155,7 +158,8 @@ func ConvertInternalTransferExpense(t *CopilotTransaction, config Config) (Doubl
 func ConvertInternalTransferIncome(t *CopilotTransaction, config Config) (DoubleEntryTransaction, DoubleEntryTransaction) {
 	override := FindOverride(t, config.Overrides.Transfer)
 	if override != nil && override.AlwaysPair != nil && *override.AlwaysPair == true {
-		log.Fatal("No pair for %s", t)
+		fmt.Fprintln(os.Stderr, "no pair for ", t)
+		os.Exit(1)
 	}
 	var expense DoubleEntryTransaction
 	var liability DoubleEntryTransaction
@@ -175,9 +179,10 @@ func ConvertInternalTransferIncome(t *CopilotTransaction, config Config) (Double
 	if override != nil && override.Account != nil {
 		expense.AccountName = *override.Account
 	}
-	liability.AccountName = "TRANSFER IN"
 	if override != nil && override.SplitAccount != nil {
 		liability.AccountName = *override.SplitAccount
+	} else {
+		ErrorWithConfigTemplate(kTransferInOverrideTemplate, t)
 	}
 
 	return expense, liability

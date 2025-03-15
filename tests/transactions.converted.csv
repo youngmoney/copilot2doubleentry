@@ -1,0 +1,23 @@
+Date,Description,Notes,Memo,Account Name,Amount Num.
+2025-01-09,Excluded,,,Travel & Vacation,-200
+2025-01-09,Excluded,,,Credit Card,200
+2025-01-08,Tags,[#tag1 #tag2],,A Category,-77
+2025-01-08,Tags,[#tag1 #tag2],,Credit Card,77
+2025-01-08,Tags and Note,noted [#tag1 #tag2],,A Category,-77
+2025-01-08,Tags and Note,noted [#tag1 #tag2],,Credit Card,77
+2025-01-08,Note,noted,,A Category,-77
+2025-01-08,Note,noted,,Credit Card,77
+2025-01-06,Grouped Category,,,Other,11
+2025-01-06,Grouped Category,,,Venmo,-11
+2025-01-05,Flights,,,Travel & Vacation,-200
+2025-01-05,Flights,,,Credit Card,200
+2025-01-05,Food,,,Restaurants,-17
+2025-01-05,Food,,,Credit Card,17
+2025-01-04,Irs Usataxpymt,,,,666
+2025-01-04,Irs Usataxpymt,,,Income Losses,-666
+2025-01-03,Venmo,,,Venmo,5
+2025-01-03,Venmo,,,My Checkings,-5
+2025-01-02,Payroll Company,,,My Checkings,10
+2025-01-02,Payroll Company,,,Income,-10
+2025-01-01,Transfer to Checkings,,,My Checkings,6
+2025-01-01,Transfer to Checkings,,,Dividends Income,-6

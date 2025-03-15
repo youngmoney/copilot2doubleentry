@@ -1,0 +1,2 @@
+"date","name","amount","status","category","parent category","excluded","tags","type","account","account mask","note","recurring"
+"2025-01-01","Venmo",5,"posted","",,true,,"internal transfer","My Checkings","1234",,""

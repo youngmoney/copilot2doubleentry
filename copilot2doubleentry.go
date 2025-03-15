@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 	filename := flag.Arg(0)
 	if len(filename) == 0 {
-		fmt.Println("provide a csv file to convert")
+		fmt.Fprintln(os.Stderr, "provide a csv file to convert")
 		os.Exit(1)
 	}
 	transactions := ReadCopilot(filename)
@@ -33,7 +33,8 @@ func main() {
 	converted := Convert(transactions, config, firstDay, lastDay)
 	csvContent, err := gocsv.MarshalString(&converted)
 	if err != nil {
-		panic(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 	fmt.Print(csvContent)
 }

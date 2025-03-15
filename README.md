@@ -51,14 +51,13 @@ When overriding Expenses:
 When overriding Income:
 
 -   `account` replaces the account
--   `split_account` replaces the placeholder `INCOME INCOME` in the
-    generated double entry
+-   `split_account` replaces source account
 
 When overriding Internal Transfer:
 
 -   `account` replaces the account
--   `split_account` replaces the placeholder `TRANSFER OUT` or
-    `TRANSFER IN` in the generated double entry
+-   `split_account` replaces the placeholder source account for incoming
+    transfers and the destination account for outgoing transfers
 
 `always_pair` is only used for Internal Transfers. It will find a
 matching amount transaction across all accounts that has the inverse (ie
