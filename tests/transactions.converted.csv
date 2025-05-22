@@ -13,8 +13,8 @@ Date,Description,Notes,Memo,Account Name,Amount Num.
 2025-01-05,Flights,,,Credit Card,200
 2025-01-05,Food,,,Restaurants,-17
 2025-01-05,Food,,,Credit Card,17
-2025-01-04,Irs Usataxpymt,,,,666
-2025-01-04,Irs Usataxpymt,,,Income Losses,-666
+2025-01-04,Irs Usataxpymt,,,Income Losses,666
+2025-01-04,Irs Usataxpymt,,,My Checkings,-666
 2025-01-03,Venmo,,,Venmo,5
 2025-01-03,Venmo,,,My Checkings,-5
 2025-01-02,Payroll Company,,,My Checkings,10

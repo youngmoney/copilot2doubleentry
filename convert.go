@@ -86,6 +86,9 @@ func ConvertExpense(t *CopilotTransaction, config Config) (DoubleEntryTransactio
 	if override != nil && override.Account != nil {
 		expense.AccountName = *override.Account
 	}
+	if expense.AccountName == "" {
+		ErrorWithConfigTemplate(kExpenseOverrideTemplate, t)
+	}
 	liability.AccountName = t.Account
 	if override != nil && override.SplitAccount != nil {
 		liability.AccountName = *override.SplitAccount

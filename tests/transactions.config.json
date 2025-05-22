@@ -32,9 +32,9 @@
       {
         "match": {
             "description": ".*tax.*",
-            "account": ".*"
+            "split_account": ".*"
         },
-        "split_account": "Income Losses"
+        "account": "Income Losses"
       }
     ]
   }

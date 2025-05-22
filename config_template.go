@@ -18,10 +18,10 @@ const (
       {
         "match": {
           "description": "{{ .Description }}",
-          "account": "{{ .Account }}",
+          "split_account": "{{ .Account }}",
           "outgoing":  {{ if .Negative }}false{{else}}true{{end}}
         },
-        "split_account": <expense account>
+        "account": <expense account>
       }
     ]
   }
