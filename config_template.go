@@ -12,6 +12,20 @@ type OverrideData struct {
 }
 
 const (
+	kExpenseOverrideTemplate = `{
+  "overrides": {
+    "expense": [
+      {
+        "match": {
+          "description": "{{ .Description }}",
+          "account": "{{ .Account }}",
+          "outgoing":  {{ if .Negative }}false{{else}}true{{end}}
+        },
+        "split_account": <expense account>
+      }
+    ]
+  }
+}`
 	kIncomeOverrideTemplate = `{
   "overrides": {
     "income": [

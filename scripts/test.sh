@@ -14,6 +14,7 @@ diff <(run --firstDay=2025-01-03 --lastDay=2025-01-03) <(cat tests/transactions.
 diff <(run --firstDay=2025-01-03) <(cat tests/transactions.converted.03-.csv)
 diff <(run --lastDay=2025-01-03) <(cat tests/transactions.converted.-03.csv)
 
+missing expense 2>/dev/null && echo "missing expense should error"
 missing income 2>/dev/null && echo "missing income should error"
 missing transfer_in 2>/dev/null && echo "missing transfer in should error"
 missing transfer_out 2>/dev/null && echo "missing transfer out should error"
