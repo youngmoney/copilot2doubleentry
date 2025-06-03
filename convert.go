@@ -217,6 +217,11 @@ func ConvertInternalTransferPair(p *CopilotTransaction, n *CopilotTransaction, c
 	return expense, liability
 }
 
+func ShouldPair(t *CopilotTransaction, overrides []Override) bool {
+	override := FindOverride(t, overrides)
+	return override != nil && override.AlwaysPair != nil && *override.AlwaysPair == true
+}
+
 func ProcessTransfers(transfers []*CopilotTransaction, config Config) []DoubleEntryTransaction {
 	var negatives, positives []*CopilotTransaction
 
@@ -233,15 +238,21 @@ func ProcessTransfers(transfers []*CopilotTransaction, config Config) []DoubleEn
 	var converted []DoubleEntryTransaction
 
 	for _, p := range positives {
+
 		var paired bool
 
-		for _, n := range negatives {
-			if p.Amount.Add(n.Amount.Decimal).IsZero() {
-				if math.Abs(p.Date.Time.Sub(n.Date.Time).Hours()) < 5*24 {
-					used_negatives = append(used_negatives, n)
-					paired = true
-					one, two := ConvertInternalTransferPair(p, n, config)
-					converted = append(converted, one, two)
+		if ShouldPair(p, config.Overrides.Transfer) {
+			for _, n := range negatives {
+				if !ShouldPair(n, config.Overrides.Transfer) {
+					continue
+				}
+				if p.Amount.Add(n.Amount.Decimal).IsZero() {
+					if math.Abs(p.Date.Time.Sub(n.Date.Time).Hours()) < 5*24 {
+						used_negatives = append(used_negatives, n)
+						paired = true
+						one, two := ConvertInternalTransferPair(p, n, config)
+						converted = append(converted, one, two)
+					}
 				}
 			}
 		}

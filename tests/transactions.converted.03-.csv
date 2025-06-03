@@ -1,6 +1,12 @@
 Date,Description,Notes,Memo,Account Name,Amount Num.
 2025-01-09,Excluded,,,Travel & Vacation,-200
 2025-01-09,Excluded,,,Credit Card,200
+2025-01-09,Credit Card Payment/Credit Card Payment Received,,,Credit Card,39
+2025-01-09,Credit Card Payment/Credit Card Payment Received,,,My Checkings,-39
+2025-01-09,Transfer from Checkings,,,Investment,6
+2025-01-09,Transfer from Checkings,,,My Checkings,-6
+2025-01-09,Transfer to Checkings,,,My Checkings,6
+2025-01-09,Transfer to Checkings,,,Dividends Income,-6
 2025-01-08,Tags,[#tag1 #tag2],,A Category,-77
 2025-01-08,Tags,[#tag1 #tag2],,Credit Card,77
 2025-01-08,Tags and Note,noted [#tag1 #tag2],,A Category,-77

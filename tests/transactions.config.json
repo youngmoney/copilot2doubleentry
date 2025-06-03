@@ -26,6 +26,30 @@
           "outgoing":  false
         },
         "split_account": "Dividends Income"
+      },
+      {
+        "match": {
+          "description": "Transfer from Checkings",
+          "account": "My Checkings",
+          "outgoing":  true
+        },
+        "split_account": "Investment"
+      },
+      {
+        "match": {
+          "description": "Credit Card Payment",
+          "account": "My Checkings",
+          "outgoing":  true
+        },
+        "always_pair": true
+      },
+      {
+        "match": {
+          "description": "Credit Card Payment Received",
+          "account": "Credit Card",
+          "outgoing":  false
+        },
+        "always_pair": true
       }
     ],
     "expense": [

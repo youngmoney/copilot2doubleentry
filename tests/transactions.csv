@@ -10,4 +10,8 @@
 "2025-01-08","Tags",-77,"posted","A Category",,false,"tag1,tag2","regular","Credit Card","9999",,""
 "2025-01-08","Tags and Note",-77,"posted","A Category",,false,"tag1,tag2","regular","Credit Card","9999","noted",""
 "2025-01-08","Note",-77,"posted","A Category",,false,,"regular","Credit Card","9999","noted",""
+"2025-01-09","Credit Card Payment",39,"posted","",,true,,"internal transfer","My Checkings","9999",,""
 "2025-01-09","Excluded",-200,"posted","Travel & Vacation",,true,,"regular","Credit Card","9999",,""
+"2025-01-09","Credit Card Payment Received",-39,"posted","",,true,,"internal transfer","Credit Card","9999",,""
+"2025-01-09","Transfer to Checkings",-6,"posted","",,true,,"internal transfer","My Checkings","1234",,""
+"2025-01-09","Transfer from Checkings",6,"posted","",,true,,"internal transfer","My Checkings","1234",,""
